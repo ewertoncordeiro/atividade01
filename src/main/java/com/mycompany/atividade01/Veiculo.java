@@ -28,7 +28,10 @@ public abstract class Veiculo {
         motor = new Motor();
     }
 
-    public final void setPlaca(String placa) {
+    public final void setPlaca(String placa) throws  VeiculoPlacaException{
+       if (placa.isEmpty()) {
+            throw new VeiculoPlacaException("Placa nao pode estar vazia");
+       }
         this.placa = placa;
     }
 
