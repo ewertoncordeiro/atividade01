@@ -13,55 +13,46 @@ import java.util.List;
  */
 public class BDVeiculos {
 
-   // private static Passeio[] vetPasseio = new Passeio[5];
-    private static Carga[] vetCarga = new Carga[5];
-    
-    private static Passeio pas;
-    private static List<Passeio> bdPas = new ArrayList<Passeio>();
+    // private static Passeio[] vetPasseio = new Passeio[5];
+    //  private static Carga[] vetCarga = new Carga[5];
+    private static List<Passeio> listaPasseio = new ArrayList<Passeio>();
+    private static List<Carga> listaCarga = new ArrayList<Carga>();
     private static BDVeiculos BDVeiculosUnic;
-    
-     private BDVeiculos(){
-         bdPas = new ArrayList<Passeio>();
-       }
-      
-        public static  BDVeiculos gerarGerpes(){
-            if (BDVeiculosUnic == null){
-                BDVeiculosUnic = new BDVeiculos();            
-        }
-          return BDVeiculosUnic;
-        }
 
-
-    public static void setVetCarga(Carga[] vetCarga) {
-        BDVeiculos.vetCarga = vetCarga;
+    private BDVeiculos() {
+        listaPasseio = new ArrayList<Passeio>();
+        listaCarga = new ArrayList<Carga>();
     }
 
-
-    public static Carga[] getVetCarga() {
-        return vetCarga;
+    public static BDVeiculos gerarGerpes() {
+        if (BDVeiculosUnic == null) {
+            BDVeiculosUnic = new BDVeiculos();
+        }
+        return BDVeiculosUnic;
     }
-    
-      //busca todos os registros
-    	public static void achatodasPlacaPasseio(){
-		for(int i = 0; i < bdPas.size(); i++){
-                                 imprimePasseio(bdPas.get(i));
-                }
-	}
-      
-        public Passeio achaPlacaPasseio(Passeio veiculoPasseio) {
-    for (int i = 0; i < bdPas.size(); i++) {
-        if (veiculoPasseio.getPlaca().equalsIgnoreCase(bdPas.get(i).getPlaca())) {
-           return bdPas.get(i);
+
+    //metodos classe passeio
+    //buscar
+    public static void achatodasPlacaPasseio() {
+        for (int i = 0; i < listaPasseio.size(); i++) {
+            imprimePasseio(listaPasseio.get(i));
         }
     }
-    return null;
-}
+
+    public Passeio achaPlacaPasseio(Passeio veiculoPasseio) {
+        for (int i = 0; i < listaPasseio.size(); i++) {
+            if (veiculoPasseio.getPlaca().equalsIgnoreCase(listaPasseio.get(i).getPlaca())) {
+                return listaPasseio.get(i);
+            }
+        }
+        return null;
+    }
 
     //delete
     public Passeio removePesCod(Passeio pas) {
         Passeio pas1 = achaPlacaPasseio(pas);
         if (pas1 != null) {
-            bdPas.remove(pas1);
+            listaPasseio.remove(pas1);
             return null;
         } else {
             return pas;
@@ -71,46 +62,53 @@ public class BDVeiculos {
     // insert
     public Passeio cadPas(Passeio pas) throws VeicExistException {
         if (achaPlacaPasseio(pas) == null) {
-            bdPas.add(pas);
+            listaPasseio.add(pas);
             return pas;
         } else {
             return null;
         }
     }
 
-    
-    //verificar posicao dos vetores
-    public static int achaVetPasseio(Passeio[] vetP) {
-        for (int i = 0; i < vetP.length; i++) {
-            if (vetP[i] == null) {
-                return i;
-            }
+    //metodos classe carga
+    //buscar
+    public static void achatodasPlacaCarga() {
+        for (int i = 0; i < listaCarga.size(); i++) {
+            imprimeCarga(listaCarga.get(i));
         }
-        return -1;
     }
 
-    public static int achaVetCarga(Carga[] vetCarga) {
-        for (int i = 0; i < vetCarga.length; i++) {
-            if (vetCarga[i] == null) {
-                return i;
+    public Carga achaPlacaCarga(Carga veiculocarga) {
+        for (int i = 0; i < listaCarga.size(); i++) {
+            if (veiculocarga.getPlaca().equalsIgnoreCase(listaCarga.get(i).getPlaca())) {
+                return listaCarga.get(i);
             }
         }
-        return -1;
+        return null;
     }
 
+    //delete
+    public Carga removePesCod(Carga car) {
+        Carga car1 = achaPlacaCarga(car);
+        if (car1 != null) {
+            listaCarga.remove(car1);
+            return null;
+        } else {
+            return car;
+        }
+    }
 
-    public static void achaPlacaVetCarga(Carga veiculoCarga) throws VeicExistException {
-        for (int i = 0; i < vetCarga.length; i++) {
-            if (vetCarga[i] != null) {
-                if (vetCarga[i].getPlaca().equalsIgnoreCase(veiculoCarga.getPlaca())) {
-                    throw new VeicExistException();
-                }
-            }
+    // insert
+    public Carga cadPas(Carga car) throws VeicExistException {
+        if (achaPlacaCarga(car) == null) {
+            listaCarga.add(car);
+            return car;
+        } else {
+            return null;
         }
     }
 
     public static void imprimePasseio(Passeio passeio) {
-        System.out.println("Impressao da placa: " );
+        System.out.println("Impressao da placa: ");
         System.out.println("Marca........" + passeio.getMarca());
         System.out.println("Modelo......." + passeio.getModelo());
         System.out.println("Placa........" + passeio.getPlaca());
@@ -125,8 +123,7 @@ public class BDVeiculos {
         System.out.println("-------------------------");
     }
 
-    public static void imprimeCarga(Carga carga, int i) {
-        System.out.println("Posicao do Vetor:" + i);
+    public static void imprimeCarga(Carga carga) {
         System.out.println("Marca........" + carga.getMarca());
         System.out.println("Modelo......." + carga.getModelo());
         System.out.println("Placa........" + carga.getPlaca());
