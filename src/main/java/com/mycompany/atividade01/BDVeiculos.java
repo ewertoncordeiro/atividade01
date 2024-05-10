@@ -13,8 +13,6 @@ import java.util.List;
  */
 public class BDVeiculos {
 
-    // private static Passeio[] vetPasseio = new Passeio[5];
-    //  private static Carga[] vetCarga = new Carga[5];
     private static List<Passeio> listaPasseio = new ArrayList<Passeio>();
     private static List<Carga> listaCarga = new ArrayList<Carga>();
     private static BDVeiculos BDVeiculosUnic;
