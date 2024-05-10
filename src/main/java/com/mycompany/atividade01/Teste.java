@@ -16,11 +16,11 @@ public class Teste {
     private static Carga veiculoCarga = new Carga();
     private static final Leitura l = new Leitura();
     private static BDVeiculos bdpass = BDVeiculos.gerarGerpes();
+    private static BDVeiculos bdcar = BDVeiculos.gerarGerpes();
+    private static boolean opcaoContinuar = true;
 
-    public static void main(String args[]) throws IOException, VeicExistException, VelocException {
+    public static void main(String args[]) throws IOException, VeicExistException, VelocException, VeiculoPlacaException {
 
-        //  Passeio[] vetPasseio = BDVeiculos.getVetPasseio();
-        Carga[] vetCarga = BDVeiculos.getVetCarga();
         boolean continuar = true;
         int opcao = 0;
 
@@ -33,7 +33,8 @@ public class Teste {
             System.out.println("\t4 - Imprimir Todos os Veiculos de Carga");
             System.out.println("\t5 - Imprimir Veiculo de Passeio pela Placa");
             System.out.println("\t6 - Imprimir Veiculo de Carga pela Placa");
-            System.out.println("\t7 - Imprimir Veiculo de Carga pela Placa");
+            System.out.println("\t7 - Excluir Veiculo de passeio pela Placa");
+            System.out.println("\t8 - Excluir Veiculo de carga pela Placa");
             System.out.println("\t9 - Sair");
 
             try {
@@ -46,113 +47,95 @@ public class Teste {
 
             switch (opcao) {
                 case 1:
+                    boolean opCad = true;
                     System.out.println("Cadastro do veiculo de Passeio:");
 
-                    veiculoPasseio = new Passeio();
-                   cadastroPasseio(veiculoPasseio);
-                    l.entDados("Cadastro ok posicao press enter para continuar");
-                    String op = l.entDados("Deseja cadastrar outro veiculo de Carga? s/n");
+                    while (opCad) {
+                        veiculoPasseio = new Passeio();
+                        cadastroPasseio(veiculoPasseio);
+                        if (opcaoContinuar) {
+                            String op = l.entDados("Deseja cadastrar outro veiculo de Passeio? s/n");
                             if (op.equalsIgnoreCase("n")) {
-                                break;
-                  
-                   }
-                   break;
-
-                case 2:
-
-                    System.out.println("Cadastro do veiculo de carga:");
-                    for (int i = BDVeiculos.achaVetCarga(vetCarga); i < vetCarga.length; i++) {
-                        if (i == -1) {
-                            l.entDados("Vetor Carga cheio. Press enter para voltar ao menu");
+                                opCad = false;
+                            }
+                        } else {
                             break;
                         }
-                        try {
-                            veiculoCarga = new Carga();
-                            veiculoCarga.setPlaca(l.entDados("Placa:"));
-                            BDVeiculos.achaPlacaVetCarga(veiculoCarga);
+                    }
+                    break;
 
-                            vetCarga[i] = cadastroCarga(veiculoCarga);
+                case 2:
+                    boolean opCad2 = true;
+                    System.out.println("Cadastro do veiculo de carga:");
 
-                            l.entDados("Cadastro ok posicao " + i + " press enter para continuar");
-
-                            String op2 = l.entDados("Deseja cadastrar outro veiculo de Carga? s/n");
-                            if (op2.equalsIgnoreCase("n")) {
-                                break;
+                    while (opCad2) {
+                        veiculoCarga = new Carga();
+                        cadastroCarga(veiculoCarga);
+                        if (opcaoContinuar) {
+                            String op = l.entDados("Deseja cadastrar outro veiculo de Carga? s/n");
+                            if (op.equalsIgnoreCase("n")) {
+                                opCad2 = false;
                             }
-                            if (BDVeiculos.achaVetCarga(vetCarga) == -1) {
-                                l.entDados("Vetor carga cheio, press enter");
-                                break;
-                            }
-                        } catch (VeicExistException ve) {
+                        } else {
                             break;
                         }
                     }
                     break;
 
                 case 3:
-
                     System.out.println("Impressao dos veiculos de passeio");
-                    
                     BDVeiculos.achatodasPlacaPasseio();
-                    
                     break;
 
                 case 4:
 
                     System.out.println("Impressao dos veiculos de carga");
-                    for (int i = 0; i < vetCarga.length; i++) {
-                        if (vetCarga[i] != null) {
-                            BDVeiculos.imprimeCarga(vetCarga[i], i);
-                        } else {
-                            l.entDados("Fim da lista de impressao, press enter");
-                            break;
-                        }
-                    }
+                    BDVeiculos.achatodasPlacaCarga();
                     break;
 
                 case 5:
-
                     System.out.println("Consulta veiculo de passeio por placa");
                     veiculoPasseio = new Passeio();
-                    
                     veiculoPasseio.setPlaca(l.entDados("Placa:"));
                     veiculoPasseio = bdpass.achaPlacaPasseio(veiculoPasseio);
-                     if (veiculoPasseio != null) {
-                   BDVeiculos.imprimePasseio(veiculoPasseio);
+                    if (veiculoPasseio != null) {
+                        BDVeiculos.imprimePasseio(veiculoPasseio);
 
-                } else {
-                    l.entDados("Veiculo nao localizado");
-                }
-                   
+                    } else {
+                        l.entDados("Veiculo nao localizado");
+                    }
                     break;
 
                 case 6:
-
                     System.out.println("Consulta veiculo de carga por placa");
                     veiculoCarga = new Carga();
+                    veiculoCarga.setPlaca(l.entDados("Placa:"));
+                    veiculoCarga = bdcar.achaPlacaCarga(veiculoCarga);
+                    if (veiculoCarga != null) {
+                        BDVeiculos.imprimeCarga(veiculoCarga);
 
-                    boolean existePlacaC = false;
-                    String placaPesquisaC = l.entDados("Informe a placa para pesquisa:");
-                    veiculoCarga.setPlaca(placaPesquisaC);
-                    for (int i = 0; i < vetCarga.length; i++) {
-                        if (vetCarga[i] != null) {
-                            if (vetCarga[i].getPlaca().equalsIgnoreCase(veiculoCarga.getPlaca())) {
-                                BDVeiculos.imprimeCarga(vetCarga[i], i);
-                                existePlacaC = true;
-                            }
-                        }
-                    }
-                    if (!existePlacaC) {
-                        l.entDados("Placa nao localizada");
+                    } else {
+                        l.entDados("Veiculo nao localizado");
                     }
                     break;
 
                 case 7:
-
                     veiculoPasseio = new Passeio();
                     veiculoPasseio.setPlaca(l.entDados("Informe a placa para exclusao:"));
                     veiculoPasseio = bdpass.removePesCod(veiculoPasseio);
                     if (veiculoPasseio == null) {
+                        l.entDados("Veiculo excluido com sucesso");
+                    } else {
+                        l.entDados("Veiculo nao encontrado");
+                    }
+
+                    break;
+
+                case 8:
+                    veiculoCarga = new Carga();
+                    veiculoCarga.setPlaca(l.entDados("Informe a placa para exclusao:"));
+                    veiculoCarga = bdcar.removePesCod(veiculoCarga);
+                    if (veiculoCarga == null) {
                         l.entDados("Veiculo excluido com sucesso");
                     } else {
                         l.entDados("Veiculo nao encontrado");
@@ -171,64 +154,81 @@ public class Teste {
         }
     }
 
-    public static boolean cadastroPasseio(Passeio veiculoPasseio) throws VelocException, VeicExistException {
+    public static void cadastroPasseio(Passeio veiculoPasseio) throws VelocException, VeicExistException, VeiculoPlacaException {
 
         boolean continuar = true;
         while (continuar) {
             try {
-                veiculoPasseio.setPlaca(l.entDados("Placa:"));
-             //   veiculoPasseio.setMarca(l.entDados("Marca: "));
-             //   veiculoPasseio.setModelo(l.entDados("Modelo:"));
-             //   veiculoPasseio.setCor(l.entDados("Cor:"));
-            //    try {
-             //       veiculoPasseio.setVelocMax(Float.parseFloat(l.entDados("Velocidade max.:")));
-             //   } catch (VelocException ve) {
-             //       veiculoPasseio.setVelocMax((100));
-             //   }
-            //    veiculoPasseio.setQtdRodas(Integer.parseInt(l.entDados("Qtd Rodas:")));
-           //    veiculoPasseio.getMotor().setPotencia(Integer.parseInt(l.entDados("Potencia:")));
-            //    veiculoPasseio.getMotor().setQtdPist(Integer.parseInt(l.entDados("Qtd pist.:")));
-            //    veiculoPasseio.setQtdPassageiros(Integer.parseInt(l.entDados("Qtd passageiros.:")));
-                veiculoPasseio = bdpass.cadPas(veiculoPasseio);
-                continuar = false;
+                try {
+                    veiculoPasseio.setPlaca(l.entDados("Placa:"));
+                    veiculoPasseio.setMarca(l.entDados("Marca: "));
+                    veiculoPasseio.setModelo(l.entDados("Modelo:"));
+                    veiculoPasseio.setCor(l.entDados("Cor:"));
+                    try {
+                        veiculoPasseio.setVelocMax(Float.parseFloat(l.entDados("Velocidade max.:")));
+                    } catch (VelocException ve) {
+                        veiculoPasseio.setVelocMax((100));
+                    }
+                    veiculoPasseio.setQtdRodas(Integer.parseInt(l.entDados("Qtd Rodas:")));
+                    veiculoPasseio.getMotor().setPotencia(Integer.parseInt(l.entDados("Potencia:")));
+                    veiculoPasseio.getMotor().setQtdPist(Integer.parseInt(l.entDados("Qtd pist.:")));
+                    veiculoPasseio.setQtdPassageiros(Integer.parseInt(l.entDados("Qtd passageiros.:")));
+                    veiculoPasseio = bdpass.cadPas(veiculoPasseio);
+                    continuar = false;
 
-                if (veiculoPasseio != null) {
-                    l.entDados("Veiculo passeio incluido. Press enter");
-                   
-                } else {
-                    l.entDados("Veiculo ja existente. Press enter para reiniciar");
+                    if (veiculoPasseio != null) {
+                        l.entDados("Veiculo passeio incluido. Press enter");
+                        opcaoContinuar = true;
+                    } else {
+                        l.entDados("Veiculo ja existente. Press enter para reiniciar");
+                        opcaoContinuar = false;
+                    }
+                } catch (VeiculoPlacaException vpe) {
+                    System.out.println("Placa vazia: " + vpe.getMessage());
                 }
             } catch (NumberFormatException nfe) {
                 System.out.println("Apenas numeros inteiros nos atributos numericos. Reiniciando cadastro");
             }
         }
-        return true;
     }
 
-    private static Carga cadastroCarga(Carga veiculoCarga) throws VelocException {
+    public static void cadastroCarga(Carga veiculoCarga) throws VelocException, VeicExistException, VeiculoPlacaException {
 
         boolean continuar = true;
         while (continuar) {
             try {
-                veiculoCarga.setMarca(l.entDados("Marca:"));
-                veiculoCarga.setModelo(l.entDados("Modelo:"));
-                veiculoCarga.setCor(l.entDados("Cor:"));
                 try {
-                    veiculoCarga.setVelocMax(Float.parseFloat(l.entDados("Velocidade max.:")));
-                } catch (VelocException ve) {
-                    veiculoCarga.setVelocMax(90);
+                    veiculoCarga.setPlaca(l.entDados("Placa:"));
+                    veiculoCarga.setMarca(l.entDados("Marca:"));
+                    veiculoCarga.setModelo(l.entDados("Modelo:"));
+                    veiculoCarga.setCor(l.entDados("Cor:"));
+                    try {
+                        veiculoCarga.setVelocMax(Float.parseFloat(l.entDados("Velocidade max.:")));
+                    } catch (VelocException ve) {
+                        veiculoCarga.setVelocMax(90);
+                    }
+                    veiculoCarga.setQtdRodas(Integer.parseInt(l.entDados("Qtd Rodas:")));
+                    veiculoCarga.getMotor().setPotencia(Integer.parseInt(l.entDados("Potencia:")));
+                    veiculoCarga.getMotor().setQtdPist(Integer.parseInt(l.entDados("Qtd Pist.:")));
+                    veiculoCarga.setCargaMax(Integer.parseInt(l.entDados("Carga max..:")));
+                    veiculoCarga.setTara(Integer.parseInt(l.entDados("Tara..:")));
+                    veiculoCarga = bdcar.cadPas(veiculoCarga);
+                    continuar = false;
+
+                    if (veiculoCarga != null) {
+                        l.entDados("Veiculo de carga incluido. Press enter");
+                        opcaoContinuar = true;
+                    } else {
+                        l.entDados("Veiculo ja existente. Press enter para reiniciar");
+                        opcaoContinuar = false;
+                    }
+                } catch (VeiculoPlacaException vpe) {
+                    System.out.println("Placa vazia: " + vpe.getMessage());
                 }
-                veiculoCarga.setQtdRodas(Integer.parseInt(l.entDados("Qtd Rodas:")));
-                veiculoCarga.getMotor().setPotencia(Integer.parseInt(l.entDados("Potencia:")));
-                veiculoCarga.getMotor().setQtdPist(Integer.parseInt(l.entDados("Qtd Pist.:")));
-                veiculoCarga.setCargaMax(Integer.parseInt(l.entDados("Carga max..:")));
-                veiculoCarga.setTara(Integer.parseInt(l.entDados("Tara..:")));
-                continuar = false;
             } catch (NumberFormatException nfe) {
                 System.out.println("Apenas numeros inteiros nos atributos numericos. Reiniciando cadastro");
             }
         }
-        return veiculoCarga;
     }
 
 }
